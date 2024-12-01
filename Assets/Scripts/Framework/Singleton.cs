@@ -3,6 +3,8 @@ using UnityEngine;
 public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
 {
     private static T _instance;
+    private static readonly object _lock = new object();
+    private static string ClassName => $"{typeof(T).Name}(Singleton)";
 
     public static T Instance
     {
@@ -10,20 +12,21 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         {
             if (_instance != null) return _instance;
 
-            _instance = FindAnyObjectByType<T>();
-            if (_instance != null)
+            lock (_lock)
             {
-                _instance.gameObject.name = ClassName;
-                DontDestroyOnLoad(_instance.gameObject);
+                _instance = FindAnyObjectByType<T>();
+                if (_instance != null)
+                {
+                    _instance.gameObject.name = ClassName;
+                    DontDestroyOnLoad(_instance.gameObject);
+                    return _instance;
+                }
+
+                var singleton = new GameObject { name = ClassName };
+                _instance = singleton.AddComponent<T>();
+                DontDestroyOnLoad(singleton);
                 return _instance;
             }
-
-            var singleton = new GameObject { name = ClassName };
-            _instance = singleton.AddComponent<T>();
-            DontDestroyOnLoad(singleton);
-            return _instance;
         }
     }
-
-    private static string ClassName => $"{typeof(T).Name}(Singleton)";
 }

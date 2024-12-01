@@ -2,12 +2,14 @@ using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 public class PlayerInputManager : MonoBehaviour
 {
+    [FormerlySerializedAs("_inputValueChanged")]
     [SerializeField, Required]
     [BoxGroup("Events"), TitleGroup("Events/Publish")]
-    private SOPlayerInputValueChanged _inputValueChanged;
+    private SOPlayerInputValueChangedEvent _inputValueChangedEvent;
 
     private PlayerInputAction _inputAction;
     private PlayerInputValue _inputValue = new();
@@ -52,19 +54,19 @@ public class PlayerInputManager : MonoBehaviour
     private void OnMoveVectorChanged(InputAction.CallbackContext context)
     {
         _inputValue.MoveVector = context.ReadValue<Vector2>();
-        _inputValueChanged.Notify(_inputValue);
+        _inputValueChangedEvent.Notify(_inputValue);
     }
 
     private void OnIsRunningChanged(InputAction.CallbackContext context)
     {
         _inputValue.IsRunning = context.ReadValueAsButton();
-        _inputValueChanged.Notify(_inputValue);
+        _inputValueChangedEvent.Notify(_inputValue);
     }
 
     private void OnIsUsingAbilityChanged(InputAction.CallbackContext context)
     {
         _inputValue.IsUsingAbility = context.ReadValueAsButton();
-        _inputValueChanged.Notify(_inputValue);
+        _inputValueChangedEvent.Notify(_inputValue);
     }
 }
 

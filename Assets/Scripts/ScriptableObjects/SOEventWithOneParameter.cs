@@ -2,28 +2,27 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "SOEvent", menuName = "Scriptable Objects/Event/Without Parameters")]
-public class SOEvent : ScriptableObject
+public abstract class SOEvent<T> : ScriptableObject
 {
-    private readonly List<Action> _subscribers = new();
+    private readonly List<Action<T>> _subscribers = new();
 
-    public void Subscribe(Action callback)
+    public void Subscribe(Action<T> callback)
     {
         if (!_subscribers.Contains(callback))
             _subscribers.Add(callback);
     }
 
-    public void Unsubscribe(Action callback)
+    public void Unsubscribe(Action<T> callback)
     {
         if (_subscribers.Contains(callback))
             _subscribers.Remove(callback);
     }
 
-    public void Notify()
+    public void Notify(T value)
     {
         foreach (var subscriber in _subscribers)
         {
-            subscriber.Invoke();
+            subscriber.Invoke(value);
         }
     }
 }
