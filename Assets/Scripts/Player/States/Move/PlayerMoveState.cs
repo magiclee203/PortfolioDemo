@@ -31,7 +31,7 @@ public class PlayerMoveState : PlayerBaseState
         if (Player.Instance.InputValue.MoveVector == Vector2.zero) return;
 
         var inputVector = Player.Instance.InputValue.MoveVector;
-        var targetDir = Quaternion.LookRotation(new Vector3(inputVector.x, 0.0f, inputVector.y));
+        var targetDir = Quaternion.LookRotation(new Vector3(inputVector.x, 0.0f, inputVector.y).ToIsometric());
 
         var currentRot = Player.Instance.Rb.rotation;
         var targetRot = Quaternion.Slerp(currentRot, targetDir, _rotateSpeed * Time.deltaTime);
